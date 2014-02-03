@@ -9,9 +9,9 @@ There are two tools that makes creating a Ubuntu VM within your Mac/Windows real
 
 Steps to a running Fortran77 compiler:
 
-1) Make sure you installed Vagrant and Virtualbox.
-2) run `$ vagrant up` in the root of this folder, which will take 1-2 minutes. 
-3) run `$ vagrant ssh`.
-4) You are now ssh-ing into the Ubuntu VM.
-5) Run `$ sudo apt-get install fort77`.
-6) Compiler is ready, compile a fortran program by running `$ fort77 <filename>`.
+- Make sure you installed Vagrant and Virtualbox.
+- run `$ vagrant up` in the root of this folder, which will take 1-2 minutes. 
+- run `$ vagrant ssh`.
+- You are now ssh-ing into the Ubuntu VM.
+- Run `$ sudo apt-get install fort77`.
+- Compiler is ready, compile a fortran program by running `$ fort77 <filename>`.
