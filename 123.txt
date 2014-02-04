@@ -1,2 +1,6 @@
 sadnasdljadkpokoasdfasdf
+<<<<<<< HEAD
 11fsff
+=======
+asdfadsf
+>>>>>>> 7b044b68febe2494d35a9ad4256d194a9e21b69b
