@@ -8,7 +8,8 @@ C
 C     AUTHOR: Peiyi Mao, Yang Peng, Garindra Prahandono
 C     DATE: 2/9/2014
 C
-	  DOUBLE PRECISION A, B, C, D, X1R, X2R, X1I, X2I
+	  DOUBLE PRECISION A, B, C
+      INTEGER I
 C
 C     PRINT HEADER
       WRITE(6,50)
@@ -18,8 +19,22 @@ C
       I = 1
   100 READ (5, 105) A, B, C
   105 FORMAT (3F10.0, 3F10.0, 3F10.0)
-C
       IF (A .EQ. 0.0) GOTO 500
+      CALL SOLVER(A, B, C, I)
+      I = I + 1
+      GOTO 100
+C
+  500 WRITE (6, 510) I
+  510 FORMAT (/, ' END OF PROGRAM: ', I2, ' CARDS READ.')
+C
+      STOP
+      END
+C
+C     ============ SUBROUTINE SOLVER ===============
+C
+      SUBROUTINE SOLVER (A, B, C, I)
+      DOUBLE PRECISION A, B, C, D, X1R, X2R, X1I, X2I
+C
       D = B * B - 4.0 * A * C
 C
 C     GREATER THAN ZERO
@@ -50,14 +65,10 @@ C     LESS THAN ZERO
       IF (X1R .NE. 0.0 .AND. X2R .NE. 0.0) GOTO 160
       WRITE (6, 155) I, A, B, C, X1I, X2I
   155 FORMAT (I4, ':', 3(1PE15.4), 15X, 1PE15.4, 15X, 1PE15.4)
+      GOTO 450
   160 WRITE (6, 165) I, A, B, C, X1R, X1I, X2R, X2I
   165 FORMAT (I4, ':', 7(1PE15.4))
 C
-  450 I = I + 1
-      GOTO 100
 C
-  500 WRITE (6, 510) I
-  510 FORMAT (/, ' END OF PROGRAM: ', I2, ' CARDS READ.')
-C
-      STOP
+  450 RETURN
       END
