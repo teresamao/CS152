@@ -6,11 +6,9 @@ C     SOLUTION OF (X1 REAL, X1 IMG) AND
 C     (X2 REAL, X2 IMG).
 C
 C     AUTHOR: Peiyi Mao, Yang Peng, Garindra Prahandono
-C     DATE: 9/2/2014
+C     DATE: 2/9/2014
 C
 	  DOUBLE PRECISION A, B, C, D, X1R, X2R, X1I, X2I
-      INTEGER I, J, K
-      CHARACTER S1(2, 7)
 C
 C     PRINT HEADER
       WRITE(6,50)
@@ -20,7 +18,6 @@ C
       I = 1
   100 READ (5, 105) A, B, C
   105 FORMAT (3F10.0, 3F10.0, 3F10.0)
-C
 C
       IF (A .EQ. 0.0) GOTO 500
       D = B * B - 4.0 * A * C
