@@ -1,0 +1,240 @@
+;;;; Assignment 2 - Recursive Scheme Procedures
+;;; The following are ten Scheme Procedures. 
+;;; Members: Peiyi Mao, Yang Peng, Garindra Prahandono
+;;; Date: 2/24/2014
+
+;; 1
+;; Construct an empty list n times by recursively calling nest n times.
+;; Each time n is decreased by 1. When n reaches 0, it returns and combines
+;; the excisting list with the previous empty list.
+> (define nest
+    (lambda (n)
+      (if (<= n 0) '()
+        (cons (nest (- n 1)) '()))))
+> (nest 0)
+()
+> (nest 1)
+(())
+> (nest 2)
+((()))
+> (nest 3)
+(((())))
+
+;; 2
+;; If list is not empty, construct the first element in the list with 
+;; the list returned by recursive calls, which is passed in the 'cddr'
+;; of the currently list.
+> (define alternate
+  (lambda (lst)
+    (cond
+      ((null? lst) '())
+      ((equal? (cdr lst) '()) lst)
+      (else (cons (car lst) (alternate (cddr lst))))
+      )))
+> (alternate '(a b (c d) e f g))
+(a (c d) f)
+> (alternate '())
+()
+> (alternate '(()))
+(())
+> (alternate '(() () ()))
+(() ())
+
+;; 3
+;; It compares the first element of the list with the second.
+;; If they are the same, recursively call all-same? with the 
+;; first element removed. If one different found, it returns 
+;; #f immediately. 
+> (define all-same?
+  (lambda (lst)
+    (cond
+      ((null? lst) #t)
+      ((equal? (cdr lst) '()) (all-same? '()))
+      ((equal? (car lst) (cadr lst)) (all-same? (cdr lst)))
+      (else #f))))
+> (all-same? '(a a))
+#t
+> (all-same? '(a b))
+#f
+> (all-same? '(a))
+#t
+> (all-same? '())
+#t
+> (all-same? '((a b) (a b) (a b)))
+#t
+
+;; 4
+;; Assume that remove-leading can process the rest of the list. 
+;; Then I have to deal with the first item of the list. 
+;; When the first item equals the item in the list, 
+;; then cdr the list and put the item in the list. 
+;; Then into the recursive call that processes the rest of the list.
+
+ (define remove-leading
+    (lambda (item lst)
+      (cond
+        ((null? lst) '())
+        ((equal? item (car lst)) (cons item (cdr lst)))
+        (else (remove-leading item (cdr lst))))))
+> (remove-leading 'x '(a b x y z))
+(x y z)
+> (remove-leading 'x '(a b c))
+()
+> (remove-leading '(p q) '(a (p q) z))
+((p q) z)
+> (remove-leading 'x '())
+()
+
+;; 5
+;; Searches the list for the first occurrence of 'old' element.
+;; Once it's found, subsitute with 'new' element and returns.
+;; If not found, recursively call subst-first with the first element
+;; removed till list becomes empty.
+ (define subst-first
+  (lambda (new old lst)
+    (cond
+      ((null? lst) '())
+      ((equal? old (car lst)) (cons new (cdr lst)))
+      (else (cons (car lst) (subst-first new old (cdr lst)))))))
+> (subst-first 'a 'b '())
+()
+> (subst-first 'dog 'cat '(my cat is smart))
+(my dog is smart)
+> (subst-first 'a 'b '(x y z))
+(x y z)
+> (subst-first 'a 'z '(x y z))
+(x y a)
+
+;; 6
+;; Assume that translate can process the rest of the list. 
+;; Then I have to deal with the first item of the list. 
+;; When the first item equals the item in the list, 
+;; then get the item that after the first item and 
+;; in the same level with the first item. 
+;; Then the procedure into the recursive calls that processed the rest of the list.
+
+> (define translate
+    (lambda (item lst)
+      (cond
+        ((null? lst) '())
+        ((equal? item (car (car lst))) (car (cdr (car lst))))
+        (else (translate item (cdr lst))))))
+> (translate ' cat '((dog chien) (cat chat)))
+chat
+>(translate 'a '())
+()
+> (translate 'a '((d b) (g h) (t y) (a c)))
+c
+
+;; 7
+;; Searches the list for the first consecutive occurrences of 'b'.
+;; If found, constructs a list with pattern 'b a b' with the rest of the list.
+;; If not found, recursively calls itself until list becomes empty.
+> (define sandwich-first
+  (lambda (a b lst)
+    (cond
+      ((null? lst) '())
+      ((equal? (cdr lst) '()) (cons (car lst) (sandwich-first a b '()))) 
+      ((and (equal? b (car lst)) (equal? b (cadr lst))) 
+        (cons (car lst) (cons a (cdr lst))))
+      ((cons (car lst) (sandwich-first a b (cdr lst)))))))
+> (sandwich-first 'meat 'bread'(bread cheese bread bread mustard))
+(bread cheese bread meat bread mustard)
+> (sandwich-first 'a 'b '())
+()
+> (sandwich-first 'a 'b '(b))
+(b)
+
+;; 8
+;; Assume that count can process the rest of the list. 
+;; Then I have to deal with the first item of the list. 
+;; When the first item equals the item in the list, set n plus 1, 
+;; then make the procedure go on. Then the procedure into 
+;; the recursive call that processed the rest of the list.
+ (define count
+    (lambda (item lst)
+      (cond
+        ((null? lst) n)
+        ((equal? item (car lst)) (set! n (+ n 1)) (count item (cdr lst)))
+        (else (count item (cdr lst))))))
+
+> (count 'x '(a b x c x x y))
+3
+> (count 'x '())
+0
+> (count '(p q) '(a (p q) (b ((p q) c)) d))
+2
+
+;; 9
+;; member? is a procedure that checks if an element appears in a given list.
+;; union? goes through the first list one by one and checks if elements from 
+;; the first list is a member of the second list. If no, it constructs 
+;; the matching element with the return of a recursive call of itself. If yes,
+;; discards the currently element and recursive calls itself with the 'cdr' of the 
+;; first list and the original second list. 
+> (define member?
+  (lambda (item lst)
+    (cond
+      ((null? lst) #f)
+      ((equal? item (car lst)) #t)
+      (else (member? item (cdr lst))))))
+> 
+(define union
+    (lambda (lst1 lst2)
+      (cond
+        ((null? lst1) lst2)
+        ((member? (car lst1) lst2) (union (cdr lst1) lst2))
+        (else (cons (car lst1) (union (cdr lst1) lst2))))))
+> (union'() '(a b c))
+(a b c)
+> (union '(a b (c)) '(b (c) d))
+(a b (c) d)
+> (union '() '())
+()
+> (union '(a) '(a))
+(a)
+> (union '() '(a))
+(a)
+> (union '(a b) '())
+(a b)
+
+
+;; 10
+;; I define member?  and unique to help the procedure. 
+;; Assume that intersect can process the rest of the list. 
+;; Then I have to deal with the first item of the list. 
+;; When the first item is one of the member in the list, 
+;; then cons it in the list. Then the procedure into the 
+;; recursive call that processed the rest of the list, at last unique the list.
+ (define member?
+    (lambda (item list)
+      (cond
+        ((null? list) #f)
+        ((equal? item (car list)) #t)
+        (else (member? item (cdr list))))))
+ 
+(define unique
+    (lambda (list)
+     (cond
+       ((null? list) '())
+       ((not (member? (car list) (unique (cdr list))))
+        (cons (car list) (unique (cdr list))))
+       (else (unique (cdr list))))))
+
+>  (define intersect
+    (lambda (lst ls)
+      (cond
+        ((null? lst) '())
+        ((member? (car lst) ls) (cons (car lst) (unique (intersect (cdr lst) ls))))
+        (else (unique (intersect (cdr lst) ls)))))
+
+>(intersect '(a b b ) '(b c d))
+(b)
+> (intersect '() '())
+()
+> (intersect '(a b (c)) '(a (c) d))
+(a (c))
+> (intersect '(a b b c) '(b c c d))
+(b c)
+> (intersect '(a b c) '((c) d e))
+()
